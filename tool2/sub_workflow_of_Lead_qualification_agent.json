@@ -1,0 +1,217 @@
+{
+  "name": "sub workflow of Lead qualification agent",
+  "nodes": [
+    {
+      "parameters": {
+        "workflowInputs": {
+          "values": [
+            {
+              "name": "Lead name"
+            },
+            {
+              "name": "Email"
+            },
+            {
+              "name": "Message"
+            },
+            {
+              "name": "Company information"
+            }
+          ]
+        }
+      },
+      "type": "n8n-nodes-base.executeWorkflowTrigger",
+      "typeVersion": 1.1,
+      "position": [
+        0,
+        0
+      ],
+      "id": "48c191f1-dd68-4c35-99ac-bbbe8e506a4a",
+      "name": "When Executed by Another Workflow"
+    },
+    {
+      "parameters": {
+        "promptType": "define",
+        "text": "=We have a new inbound lead and we need you to classify it into either SaaS or development agency category.\n\nHere is the lead information:\nName: {{ $json['Lead name'] }}\nRequest: {{ $json.Message }}\nCompany Information: {{ $json['Company information'] }}\n\nIf the lead a SaaS company, output 'SaaS'\nIf the lead is a development agency, output 'Agency'",
+        "batching": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.chainLlm",
+      "typeVersion": 1.7,
+      "position": [
+        220,
+        0
+      ],
+      "id": "6da6f5f4-425b-4110-8735-3a4cca203eba",
+      "name": "Basic LLM Chain",
+      "alwaysOutputData": true
+    },
+    {
+      "parameters": {
+        "modelName": "models/gemini-2.0-flash-001",
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.lmChatGoogleGemini",
+      "typeVersion": 1,
+      "position": [
+        308,
+        220
+      ],
+      "id": "33cc3d96-3989-4dc2-b1c3-d60f9a719977",
+      "name": "Google Gemini Chat Model",
+      "credentials": {
+        "googlePalmApi": {
+          "id": "TJNLAR1F6pKmY094",
+          "name": "Google Gemini(PaLM) Api account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": false,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 2
+          },
+          "conditions": [
+            {
+              "id": "aef8c4ff-b512-4f3b-b745-980f8bb15f15",
+              "leftValue": "={{ $json.text }}",
+              "rightValue": "Agency",
+              "operator": {
+                "type": "string",
+                "operation": "contains"
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {
+          "ignoreCase": true
+        }
+      },
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.2,
+      "position": [
+        600,
+        0
+      ],
+      "id": "468e6ce0-1b20-4b91-b263-730f1dc68620",
+      "name": "If"
+    },
+    {
+      "parameters": {
+        "sendTo": "={{ $('When Executed by Another Workflow').item.json.Email }}",
+        "subject": " You're a Perfect Match for Big Boy Recruits",
+        "emailType": "text",
+        "message": "=Hi {{ $('When Executed by Another Workflow').item.json['Lead name'] }},\n\nThanks for reaching out to Big Boy Recruits!\n\nWe’ve reviewed your company and request, and we’re excited to say you’re exactly the kind of SaaS business we specialize in working with. Our deep network of post-liquidation and active tech talent makes us an ideal partner to help scale your team with the right developers—fast.\n\nA member of our team will follow up shortly to learn more and kick things off.\n\nIf you have any immediate questions or details to share, just hit reply!\n\nBest regards,\nMohit Nagaraj\nThe Big Boy Recruits Team",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.gmail",
+      "typeVersion": 2.1,
+      "position": [
+        820,
+        100
+      ],
+      "id": "ee2e5c75-ab23-473b-9f7a-2a4a5e6d8d71",
+      "name": "Saas gmail",
+      "webhookId": "409d1f9f-7dfb-483d-839f-cbceb953e86b",
+      "credentials": {
+        "gmailOAuth2": {
+          "id": "welDItOVRrvUYGs9",
+          "name": "Gmail account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "sendTo": "={{ $('When Executed by Another Workflow').item.json.Email }}",
+        "subject": "=Let’s Build Your Dev Team Together",
+        "emailType": "text",
+        "message": "=Hi {{ $('When Executed by Another Workflow').item.json['Lead name'] }},\n\nThanks for reaching out to Big Boy Recruits!\n\nWe’ve reviewed your agency and your request, and it’s clear we’re aligned. We specialize in working with development agencies like yours to supply high-quality tech talent—especially developers with real-world product experience and startup grit.\n\nOur team will be reaching out shortly to understand your needs better and start sending over top candidates.\n\nUntil then, feel free to reply to this email with any specific info you'd like us to know.\n\nTalk soon,\n\nBest,\nMohit Nagaraj\nThe Big Boy Recruits Team",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.gmail",
+      "typeVersion": 2.1,
+      "position": [
+        820,
+        -100
+      ],
+      "id": "f254c383-8af9-4155-9689-f20993d74fe6",
+      "name": "Agency gmail",
+      "webhookId": "dea4da1b-5d40-47f6-a3db-82b7ffb27443",
+      "credentials": {
+        "gmailOAuth2": {
+          "id": "welDItOVRrvUYGs9",
+          "name": "Gmail account"
+        }
+      }
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "When Executed by Another Workflow": {
+      "main": [
+        [
+          {
+            "node": "Basic LLM Chain",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Google Gemini Chat Model": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "Basic LLM Chain",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Basic LLM Chain": {
+      "main": [
+        [
+          {
+            "node": "If",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "If": {
+      "main": [
+        [
+          {
+            "node": "Agency gmail",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Saas gmail",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": false,
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "versionId": "d36fb558-843f-44ca-acc0-6b8bae68e586",
+  "meta": {
+    "templateCredsSetupCompleted": true,
+    "instanceId": "6c1a9ddf9822fa18bf37b7cf8724780111bfd77ebfc5755ed3c1b7ad93856b9e"
+  },
+  "id": "WtF2wmEkv6ilwF1I",
+  "tags": []
+}

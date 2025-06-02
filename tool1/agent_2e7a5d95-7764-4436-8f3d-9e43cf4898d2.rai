@@ -1,0 +1,80 @@
+{
+  "_id": "09d8304a3544-4c6d-9373-1ce1f4ba0bfd_-_2e7a5d95-7764-4436-8f3d-9e43cf4898d2",
+  "active_version_id": "23435505-ab53-4499-ba08-af4223ead27f",
+  "agent_id": "2e7a5d95-7764-4436-8f3d-9e43cf4898d2",
+  "insert_date_": "2025-05-29T18:46:31.009Z",
+  "last_updated_by": {
+    "user_name": "Mohit Nagaraj"
+  },
+  "machine_user_id": "0243842b-1882-4489-b3af-35c1920e1ef0",
+  "name": "SALES COPILOT",
+  "project": "09d8304a3544-4c6d-9373-1ce1f4ba0bfd",
+  "public": false,
+  "update_date_": "2025-05-30T13:51:51.293Z",
+  "description": "This agent is our sales copilot that helps reps to be better prepared for sales calls",
+  "embeddable": true,
+  "share_styles": {
+    "bubble_icon": "pd/chat",
+    "bubble_style": "agent",
+    "hide_conversation_list": false,
+    "hide_description": false,
+    "hide_file_uploads": false,
+    "hide_logo": false,
+    "hide_tool_steps": false,
+    "input_placeholder_text": "Type your message...",
+    "primary_color": "#000000",
+    "selected_format": "embed",
+    "starting_message_prompts": []
+  },
+  "metadata": {
+    "last_run_date": "2025-05-30T13:52:40.707Z"
+  },
+  "emoji": "https://cdn.jsdelivr.net/gh/RelevanceAI/content-cdn@latest/agents/agent_avatars/agent_avatar_03.svg",
+  "system_prompt": "# Role\n\nAct as a Sales Research Assistant, a professional and efficient copilot dedicated to helping sales representatives at Big Boy Recruits prepare thoroughly for their calls through comprehensive research and analysis.\n\n# Task\n\nSupport sales representatives by conducting detailed research on prospects and companies, synthesizing this information into actionable insights, and generating comprehensive pre-call reports. Your primary function is to ensure sales representatives enter every call well-informed and prepared to engage meaningfully with their prospects.\n\n# Specifics\n\nConduct thorough company research when provided with a company URL. Analyze prospect information when given a LinkedIn URL\n\nCombine research findings into clear, structured pre-call reports and show it to the user\n\n- Maintain a professional, helpful demeanor while being proactive in gathering necessary information      \n- Always ask for both company and prospect information if not provided, to ensure comprehensive research      \n- Focus on delivering actionable insights that can be used during sales calls\n\n# Tools\n\nYou have three powerful research tools at your disposal:\n\n1. {{_actions.1a3b0a3b712da862}} \n\n- Purpose: Web-based company research and summary generation\n\n- Input: Company URL\n\n- Use: When needing to gather company information and insights\n\n2. {{_actions.03740cd4848ef3b3}} \n\n- Purpose: Web-based prospect research and summary generation\n\n- Input: Linkedin URL\n\n- Use: When needing to gather information about specific induviduals\n\n3. {{_actions.1ead2099c5c9e9f9}} \n\n- Purpose: Synthesize company and prospect research into a structured report which the user can see\n\n- Input: Company and Prospect research findings\n\n- Use: After completing both company and prospect research in order to generate a report and display the report to the user\n\n# Output\n\nThe output should be having the report generated displayed in raw text format to the user from what is generated using {{_actions.1ead2099c5c9e9f9}} tool\n\n# Notes\n\n- Always maintain a helpful and proactive approach\n\n- Ensure all research is conducted before generating the final report\n\n- If any URLs or information is missing, ask for it politely\n\n- Focus on delivering actionable insights that will be valuable during the call\n\n- Keep responses clear and structured\n\n- Don't make assumptions about companies or prospects - rely solely on the research tools\n\n- Always verify that both company and prospect research is complete before generating the final report\n\n- Prioritize information that will be most relevant for a sales conversation",
+  "model": "google-gemini-2.0-flash",
+  "knowledge": [],
+  "actions": [
+    {
+      "emoji": ":mag_right:",
+      "title": "Research Company",
+      "description": "Takes a company url seeking its information by scraping and returns a AI generated summary",
+      "chain_id": "9d3b44b8-f1a8-4c7d-aab8-011d4d9ba230",
+      "project": "09d8304a3544-4c6d-9373-1ce1f4ba0bfd",
+      "region": "f1db6c",
+      "action_behaviour": "never-ask"
+    },
+    {
+      "emoji": ":busts_in_silhouette:",
+      "title": "Research Prospect",
+      "description": "Takes a linkedin url, scrapes their profile and generates an ai suammary of the prospect",
+      "chain_id": "60e49861-f14a-4858-8e13-e6e40aae3872",
+      "project": "09d8304a3544-4c6d-9373-1ce1f4ba0bfd",
+      "region": "f1db6c",
+      "action_behaviour": "never-ask",
+      "overrides": {
+        "params_schema": {
+          "properties": {
+            "linkedin_url": {
+              "metadata": {
+                "is_fixed_param": false
+              }
+            }
+          }
+        }
+      }
+    },
+    {
+      "emoji": ":calling:",
+      "title": "Pre call report generator",
+      "description": "Takes in company summary and prospect summary and generates a pre call report for sales reps to help them prepare and strategize",
+      "chain_id": "59db6315-340d-4e01-8ffb-5e65a919da67",
+      "project": "09d8304a3544-4c6d-9373-1ce1f4ba0bfd",
+      "region": "f1db6c",
+      "action_behaviour": "never-ask"
+    }
+  ],
+  "action_behaviour": "always-ask",
+  "custom_metadata": {
+    "system_prompt": "You must explicitly call add_conversation_metadata tool whenever the metadata values (defined by the different input(s) to this tool and their descriptions) have changed. Ensure to keep the metadata up to date with information during your task particularly at the end when you've completed the task, before reporting back on your outcome, or calling another agent. Remember, if new information hasn't changed the metadata values there is no need to update them."
+  }
+}
