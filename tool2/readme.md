@@ -109,6 +109,9 @@ The Big Boy Recruits Team
 
 go to main workflow n click execute n voila
 
+while clients see this input form
+![input](form.png)
+
 it produces something like this
 ![output](output.png)
 
